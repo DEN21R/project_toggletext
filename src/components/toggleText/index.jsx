@@ -1,18 +1,19 @@
 import { useState, useRef } from 'react'
 import styles from './styles.module.css'
 
-useState
-useRef
 function ToggleText() {
   const [isVisib, setIsVisib] = useState(false)
   const [duration, setDuration] = useState(3)
   const textRef = useRef(null)
+  const btnRef = useRef(null)
+  const jumpCount = useRef(0)
 
   const inputValue = (e) => {
-    setDuration(e.target.value)
+    setDuration(Number(e.target.value))
   }
 
   const visibilityChange = () => {
+    jumpCount.current = 0
     if (!isVisib) {
       setIsVisib(true)
       textRef.current.style.maxHeight = '300px'
@@ -26,6 +27,18 @@ function ToggleText() {
     }
   }
 
+  const btnChange = () => {
+    jumpCount.current += 1
+
+    if (jumpCount.current === 1) {
+      btnRef.current.style.left = '160px'
+    } else if (jumpCount.current === 2) {
+      btnRef.current.style.left = '-160px'
+    } else if (jumpCount.current === 3) {
+      btnRef.current.style.left = '0px'
+    }
+  }
+
   return (
     <div className={styles.container}>
       <h1>Select how many seconds the message will appear</h1>
@@ -35,7 +48,9 @@ function ToggleText() {
         used to store a mutable value that does not cause a re-render when
         updated. It can be used to access a DOM element directly.
       </p>
-      <button onClick={visibilityChange}>Toggle</button>
+      <button ref={btnRef} onMouseMove={btnChange} onClick={visibilityChange}>
+        Toggle
+      </button>
     </div>
   )
 }
